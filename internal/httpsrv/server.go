@@ -128,7 +128,7 @@ func (s *Server) StartServer(port uint) error {
 		return err
 	}
 	mylog.Printf("Server is running on :%s", realPort)
-	return server.ListenAndServe()
+	return s.httpSrv.Serve(lis)
 }
 
 // ShutDownServer gracefully shuts down the server

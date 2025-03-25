@@ -5,7 +5,7 @@ DB_PATH = kai_security.db
 COVER_FILE = cover.out
 BUILD_DIR = build
 PORT = 8080
-MAIN_PKG = cmd/main.go
+MAIN_PKG = cmd/server/main.go
 
 # Run all unit tests with coverage
 .PHONY: test
