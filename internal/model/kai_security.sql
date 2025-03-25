@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS scan_results_info (
   scan_id TEXT PRIMARY KEY NOT NULL,
+  source_file TEXT,
   timestamp TEXT,
   scan_status TEXT,
   resource_type TEXT,

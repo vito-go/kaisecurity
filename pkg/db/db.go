@@ -1,17 +1,15 @@
 package db
 
 import (
-	"fmt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 func NewSqliteDB(dbPath string) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s", dbPath)
-	GDB, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{
+	GDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{
 		CreateBatchSize: 500,
-		Logger:          logger.Default.LogMode(logger.Info),
+		Logger:          logger.Default.LogMode(logger.Warn), // if needed,    use logger.Info can be used
 	})
 	if err != nil {
 		return nil, err

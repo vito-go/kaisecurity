@@ -1,4 +1,4 @@
-package app
+package httpsrv
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ type filters struct {
 	Severity string `json:"severity"`
 }
 
-func (a *APP) HandleQuery(w http.ResponseWriter, r *http.Request) {
+func (s *Server) HandleQuery(w http.ResponseWriter, r *http.Request) {
 	ctx := mylog.NewContext()
 	var req QueryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -25,7 +25,7 @@ func (a *APP) HandleQuery(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// do something
-	items, err := a.allDao.Vulnerability.ItemsBySeverity(ctx, req.Filters.Severity)
+	items, err := s.allDao.Vulnerability.ItemsBySeverity(ctx, req.Filters.Severity)
 	if err != nil {
 		http.Error(w, "query failed", http.StatusInternalServerError)
 		return
@@ -35,5 +35,4 @@ func (a *APP) HandleQuery(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "encode response failed", http.StatusInternalServerError)
 		return
 	}
-
 }

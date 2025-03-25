@@ -1,4 +1,4 @@
-package app
+package httpsrv
 
 import (
 	"encoding/json"
@@ -56,13 +56,14 @@ type ScanResults struct {
 	ScanMetadata    mtype.ScanMetadata `json:"scan_metadata"`
 }
 
-func (s *ScanResults) ToScanResultsInfoModel() model.ScanResultsInfo {
+func (s *ScanResults) ToScanResultsInfoModel(sourceFile string) model.ScanResultsInfo {
 	return model.ScanResultsInfo{
 		ScanId:       s.ScanId,
 		Timestamp:    s.Timestamp,
 		ScanStatus:   s.ScanStatus,
 		ResourceType: s.ResourceType,
 		ResourceName: s.ResourceName,
+		SourceFile:   sourceFile,
 		Summary:      s.Summary.Marshal(),
 		ScanMetadata: s.ScanMetadata.Marshal(),
 		CreateTime:   time.Now().Format(time.RFC3339),

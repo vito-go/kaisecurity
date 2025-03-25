@@ -4,8 +4,7 @@ import (
 	"context"
 	"errors"
 	"flag"
-	"fmt"
-	"github.com/vito-go/kaisecurity/internal/app"
+	"github.com/vito-go/kaisecurity/internal/httpsrv"
 	"github.com/vito-go/mylog"
 	"net/http"
 	"os"
@@ -27,25 +26,13 @@ func main() {
 	if *dbPath == "" {
 		panic("db path is required")
 	}
-
-	appContext, err := app.NewAppContext(*dbPath)
+	srv, err := httpsrv.NewServer(*dbPath)
 	if err != nil {
 		panic(err)
 	}
 	var exitSignal = make(chan os.Signal, 1)
-	mux := http.NewServeMux()
-	mux.HandleFunc("POST /scan", appContext.HandleScan)
-	// /query
-	mux.HandleFunc("POST /query", appContext.HandleQuery)
-
-	server := &http.Server{
-		Addr:    fmt.Sprintf(":%d", *port),
-		Handler: mux,
-	}
-
-	mylog.Printf("Server is running on :%d", *port)
 	go func() {
-		err := server.ListenAndServe()
+		err := srv.StartServer(*port)
 		if err != nil {
 			if !errors.Is(err, http.ErrServerClosed) {
 				panic(err)
@@ -58,7 +45,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	mylog.Printf("Server is shutting down gracefully")
-	err = server.Shutdown(ctx)
+	err = srv.ShutDownServer(ctx)
 	if err != nil {
 		mylog.Ctx(ctx).Error(err)
 	}
