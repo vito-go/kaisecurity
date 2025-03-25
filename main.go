@@ -35,6 +35,8 @@ func main() {
 	var exitSignal = make(chan os.Signal, 1)
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /scan", appContext.HandleScan)
+	// /query
+	mux.HandleFunc("POST /query", appContext.HandleQuery)
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", *port),

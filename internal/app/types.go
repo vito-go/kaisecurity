@@ -12,17 +12,17 @@ type ScanData struct {
 }
 
 type Vulnerability struct {
-	Id             string    `json:"id"`
-	Severity       string    `json:"severity"`
-	Cvss           float64   `json:"cvss"`
-	Status         string    `json:"status"`
-	PackageName    string    `json:"package_name"`
-	CurrentVersion string    `json:"current_version"`
-	FixedVersion   string    `json:"fixed_version"`
-	Description    string    `json:"description"`
-	PublishedDate  time.Time `json:"published_date"`
-	Link           string    `json:"link"`
-	RiskFactors    []string  `json:"risk_factors"`
+	Id             string   `json:"id"`
+	Severity       string   `json:"severity"`
+	Cvss           float64  `json:"cvss"`
+	Status         string   `json:"status"`
+	PackageName    string   `json:"package_name"`
+	CurrentVersion string   `json:"current_version"`
+	FixedVersion   string   `json:"fixed_version"`
+	Description    string   `json:"description"`
+	PublishedDate  string   `json:"published_date"`
+	Link           string   `json:"link"`
+	RiskFactors    []string `json:"risk_factors"`
 }
 
 func (v *Vulnerability) ToVulnerabilityModel(scanId string) model.Vulnerability {
@@ -40,14 +40,14 @@ func (v *Vulnerability) ToVulnerabilityModel(scanId string) model.Vulnerability 
 		PublishedDate:  v.PublishedDate,
 		Link:           v.Link,
 		RiskFactors:    string(b),
-		CreateTime:     time.Now(),
-		UpdateTime:     time.Now(),
+		CreateTime:     time.Now().Format(time.RFC3339),
+		UpdateTime:     time.Now().Format(time.RFC3339),
 	}
 }
 
 type ScanResults struct {
 	ScanId          string             `json:"scan_id"`
-	Timestamp       time.Time          `json:"timestamp"`
+	Timestamp       string             `json:"timestamp"`
 	ScanStatus      string             `json:"scan_status"`
 	ResourceType    string             `json:"resource_type"`
 	ResourceName    string             `json:"resource_name"`
@@ -65,7 +65,7 @@ func (s *ScanResults) ToScanResultsInfoModel() model.ScanResultsInfo {
 		ResourceName: s.ResourceName,
 		Summary:      s.Summary.Marshal(),
 		ScanMetadata: s.ScanMetadata.Marshal(),
-		CreateTime:   time.Now(),
-		UpdateTime:   time.Now(),
+		CreateTime:   time.Now().Format(time.RFC3339),
+		UpdateTime:   time.Now().Format(time.RFC3339),
 	}
 }

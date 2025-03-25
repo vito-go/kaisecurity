@@ -43,12 +43,12 @@ func (s *scanResultsInfo) UpdateOrCreate(ctx context.Context, m *model.ScanResul
 		}
 		err = TX.Commit().Error
 	}()
-	tx := TX.Where("scan_id = ?", m.ScanId).Updates(m)
+	tx := TX.Select("*").Omit("create_time").Where("scan_id = ?", m.ScanId).Updates(m)
 	if tx.Error != nil {
 		return tx.Error
 	}
 	if tx.RowsAffected == 0 {
-		if err = tx.Create(m).Error; err != nil {
+		if err = TX.Create(m).Error; err != nil {
 			return err
 		}
 		return nil
