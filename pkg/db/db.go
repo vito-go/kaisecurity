@@ -9,7 +9,7 @@ import (
 func NewSqliteDB(dbPath string) (*gorm.DB, error) {
 	GDB, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{
 		CreateBatchSize: 500,
-		Logger:          logger.Default.LogMode(logger.Warn), // if needed,    use logger.Info can be used
+		Logger:          logger.Default.LogMode(logger.Silent), // if needed,  use logger.Info can be used
 	})
 	if err != nil {
 		return nil, err

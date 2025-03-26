@@ -8,7 +8,6 @@ import (
 )
 
 func TestNewSqliteDBFile(t *testing.T) {
-	// 使用内存数据库
 	gdb, err := db.NewSqliteDB("/&/！not db") // use invalid path
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -19,7 +18,6 @@ func TestNewSqliteDBFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	// 执行一个简单的 SQL 来验证连接
 	sqlDB, err := gdb.DB()
 	if err != nil {
 		t.Fatalf("failed to get sql.DB: %v", err)
@@ -27,7 +25,6 @@ func TestNewSqliteDBFile(t *testing.T) {
 	if err := sqlDB.Ping(); err != nil {
 		t.Fatalf("database ping failed: %v", err)
 	}
-	// 关闭数据库
 	if err := sqlDB.Close(); err != nil {
 		t.Fatalf("failed to close database: %v", err)
 	}
@@ -42,7 +39,6 @@ func TestNewSqliteDBMemory(t *testing.T) {
 		t.Fatal("expected non-nil *gorm.DB")
 	}
 
-	// 执行一个简单的 SQL 来验证连接
 	sqlDB, err := gdb.DB()
 	if err != nil {
 		t.Fatalf("failed to get sql.DB: %v", err)
@@ -50,7 +46,6 @@ func TestNewSqliteDBMemory(t *testing.T) {
 	if err := sqlDB.Ping(); err != nil {
 		t.Fatalf("database ping failed: %v", err)
 	}
-	// 关闭数据库
 	if err := sqlDB.Close(); err != nil {
 		t.Fatalf("failed to close database: %v", err)
 	}

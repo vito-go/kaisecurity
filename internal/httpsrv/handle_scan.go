@@ -13,8 +13,9 @@ type ScanRequest struct {
 }
 
 func (s *Server) HandleScan(w http.ResponseWriter, r *http.Request) {
-	//don't use r.Context() here, because when the request is canceled, the context will be canceled,
-	// and the subsequent processing will be affected
+	// ctx to trace the request
+	// don't use r.Context() here, because when the request is canceled, the context will be canceled,
+	// and the subsequent processing will be affected, especially using the context to control the goroutine.
 	ctx := mylog.NewContext()
 	var req ScanRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -34,12 +35,12 @@ func (s *Server) HandleScan(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "too many files", http.StatusBadRequest)
 		return
 	}
-	// 调用 service 扫描逻辑
 	err := s.ProcessFilesConcurrently(ctx, req.Repo, req.Files, util.GetGithubFile)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	// if you need which file failed, return it.
 	w.Write([]byte(`success`))
 }

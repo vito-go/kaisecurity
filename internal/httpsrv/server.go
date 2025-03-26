@@ -13,6 +13,7 @@ import (
 	"net"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type Server struct {
@@ -109,10 +110,36 @@ func (s *Server) ProcessFilesConcurrently(ctx context.Context, repo string, file
 		return nil
 	}
 }
+
+func HandleFunc(mux *http.ServeMux, pattern string, handler http.HandlerFunc) {
+	mux.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		lrw := &responseWriter{ResponseWriter: w, statusCode: 200}
+		defer func() {
+			latency := time.Since(start)
+			remoteIP := r.RemoteAddr
+			// record the status code, non-200 status could be recorded in a separate log file if needed.
+			//if lrw.statusCode != http.StatusOK {
+
+			//}
+			mylog.Ctx(r.Context()).Infof("%s -> %s %d %s %s %s %s %s",
+				remoteIP,
+				r.Host,
+				lrw.statusCode,
+				r.Method,
+				r.URL.Path,
+				r.URL.RawQuery,
+				formatBytes(lrw.bytesWritten),
+				latency,
+			)
+		}()
+		handler(lrw, r)
+	})
+}
 func (s *Server) StartServer(port uint) error {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /scan", s.HandleScan)
-	mux.HandleFunc("POST /query", s.HandleQuery)
+	HandleFunc(mux, "POST /scan", s.HandleScan)
+	HandleFunc(mux, "POST /query", s.HandleQuery)
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: mux,
@@ -136,6 +163,5 @@ func (s *Server) ShutDownServer(ctx context.Context) error {
 	if s.httpSrv == nil {
 		return nil
 	}
-	mylog.Printf("Server is shutting down gracefully")
 	return s.httpSrv.Shutdown(ctx)
 }

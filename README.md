@@ -5,7 +5,7 @@ This is a Go-based REST API service that provides two main endpoints:
 - `POST /scan`: Fetches and stores vulnerability scan data from a GitHub repository.
 - `POST /query`: Queries stored vulnerabilities by severity.
 
-This service uses SQLite for storage and supports parallel file processing.
+This service uses SQLite for storage and supports parallel file processing, but easy to scale with a database like PostgreSQL, MySQL, etc.
 
 ---
 

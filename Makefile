@@ -11,8 +11,10 @@ MAIN_PKG = cmd/server/main.go
 .PHONY: test
 
 test:
-	@echo          tests with coverage...
+	@echo        tests with coverage...
 	go test -coverprofile=$(COVER_FILE) ./...
+	@echo --------------------------------------------------
+	@echo 		Coverage report generated at $(COVER_FILE)
 
 # Show HTML coverage report
 .PHONY: cover
@@ -20,6 +22,7 @@ test:
 cover: test
 	@echo  Opening coverage report...
 	go tool cover -html=$(COVER_FILE)
+# save html report: go tool cover -html=$(COVER_FILE) -o coverage.html
 
 # Run the app with default args
 .PHONY: run
@@ -34,7 +37,7 @@ run:
 build:
 	@echo      Compiling binary to $(BUILD_DIR)/$(APP_NAME)...
 	@mkdir -p $(BUILD_DIR)
-	go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_PKG)
+	go build -ldflags "-s -w" -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_PKG)
 
 # Clean up all generated files
 .PHONY: clean
